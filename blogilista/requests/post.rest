@@ -1,0 +1,9 @@
+POST HTTP://LOCALHOST:3001/api/blogs
+Content-Type: application/json
+
+{
+  "title": "Own blog",
+  "author": "Themselves",
+  "url": "http://hs.fi",
+  "likes": "0"
+}
