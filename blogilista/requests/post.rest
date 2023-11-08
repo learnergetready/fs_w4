@@ -2,8 +2,8 @@ POST HTTP://LOCALHOST:3001/api/blogs
 Content-Type: application/json
 
 {
-  "title": "Other blog",
-  "author": "Someone",
+  "title": "Third blog",
+  "author": "Someone third",
   "url": "localhost:3001",
-  "likes": "1"
+  "likes": "0"
 }

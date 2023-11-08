@@ -2,10 +2,12 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 require('dotenv').config()
+const { info, error } = require('./utils/logger')
 const Blog = require('./models/blog')
 const mongoose = require('mongoose')
 const mongoUrl = process.env.MONGODB_URI
-console.log('connecting to:', mongoUrl)
+
+info('connecting to:', mongoUrl)
 mongoose.connect(mongoUrl)
 
 app.use(cors())
@@ -31,5 +33,5 @@ app.post('/api/blogs', (request, response) => {
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
+  info(`Server running on port ${PORT}`)
 })
