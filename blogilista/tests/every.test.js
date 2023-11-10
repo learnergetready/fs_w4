@@ -1,8 +1,6 @@
 const listHelper = require('../utils/list_helper')
 
-describe('total likes', () => {
-
-  const someBlogs =
+const someBlogs =
   [
     {
       '_id': '6548e70e158ea0e28419ced5',
@@ -54,18 +52,41 @@ describe('total likes', () => {
     }
   ]
 
-  test('several blogs with 0 to 7 likes', () => {
+describe('4.3 dummy', () => {
+  test('returns one', () => {
+    const blogs = []
+
+    const result = listHelper.dummy(blogs)
+    expect(result).toBe(1)
+  })
+})
+
+describe('4.4 total likes', () => {
+
+  test('from several blogs with 0 to 7 likes', () => {
     const result = listHelper.totalLikes(someBlogs)
     expect(result).toBe(8)
   })
 
-  test('several blogs with 0 likes', () => {
+  test('from several blogs with 0 likes', () => {
     const result = listHelper.totalLikes(someBlogs.filter(blog => blog.likes === 0))
     expect(result).toBe(0)
   })
 
-  test('just one blog with 1 like', () => {
+  test('from just one blog with 1 like', () => {
     const result = listHelper.totalLikes(someBlogs[2])
     expect(result).toBe(1)
+  })
+
+  test('from an empty list gives 0', () => {
+    const result = listHelper.totalLikes([])
+    expect(result).toBe(0)
+  })
+})
+
+describe('4.5 favoriteBlog' , () => {
+  test('from blogs with 0 to 7 likes', () => {
+    const result = listHelper.favoriteBlog(someBlogs)
+    expect(result).toEqual(someBlogs[5])
   })
 })
