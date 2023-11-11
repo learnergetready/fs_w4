@@ -97,3 +97,10 @@ describe('4.6 mostBlogs', () => {
     expect(result).toEqual({ author:'Themselves', blogs:3 })
   })
 })
+
+describe('4.7 mostLikes', () => {
+  test('from authors with 0 to 7 likes, 7 in one blog', () => {
+    const result = listHelper.mostLikes(someBlogs)
+    expect(result).toEqual({ author:'Someone else', likes:7 })
+  })
+})
