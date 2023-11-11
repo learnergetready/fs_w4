@@ -56,6 +56,25 @@ test('a specific blog has "id" field', async () => {
   expect(blogs[0].id).toBeDefined()
 })
 
+test('a blog can be added', async () => {
+  const newBlog =
+    { title: 'This blog',
+      author: 'This guy',
+      url: 'http://localhost:3001/thisURL',
+      likes: 6 }
+
+  await api
+    .post('/api/blogs',)
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+
+  const titles = response.body.map(b => b.title)
+  expect(titles).toContain('This blog')
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })
