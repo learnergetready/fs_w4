@@ -43,9 +43,17 @@ test('all blogs are returned', async () => {
 test('a specific blog is within the returned blogs', async ()  => {
   const response = await api.get('/api/blogs')
 
-  const titles = response.body.map( r => r.title)
+  const titles = response.body.map( b => b.title)
 
   expect(titles).toContain('Own blog')
+})
+
+test('a specific blog has "id" field', async () => {
+  const response = await api.get('/api/blogs')
+
+  const blogs = response.body
+
+  expect(blogs[0].id).toBeDefined()
 })
 
 afterAll(async () => {
