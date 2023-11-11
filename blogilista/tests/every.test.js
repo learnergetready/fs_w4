@@ -37,7 +37,7 @@ const someBlogs =
     {
       '_id': '654bca7163991bffcf48c742',
       'title': 'Fourth blog',
-      'author': 'Someone else',
+      'author': 'Themselves',
       'url': 'localhost:3001',
       'likes': 0,
       '__v': 0
@@ -88,5 +88,12 @@ describe('4.5 favoriteBlog' , () => {
   test('from blogs with 0 to 7 likes', () => {
     const result = listHelper.favoriteBlog(someBlogs)
     expect(result).toEqual(someBlogs[5])
+  })
+})
+
+describe('4.6 mostBlogs', () => {
+  test('from authors with 1 to 3 blogs', () => {
+    const result = listHelper.mostBlogs(someBlogs)
+    expect(result).toEqual({ author:'Themselves', blogs:3 })
   })
 })
