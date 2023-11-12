@@ -95,6 +95,30 @@ describe('POST', () => {
 
     expect(newBlogFromDB.likes).toBe(0)
   })
+
+  test('missing title returns 400', async () => {
+    const newBlog =
+    { author: 'This guy',
+      url: 'http://localhost:3001/thisURL'
+    }
+
+    await api
+      .post('/api/blogs',)
+      .send(newBlog)
+      .expect(400)
+  })
+
+  test('missing url returns 400', async () => {
+    const newBlog =
+    { title: 'This blog',
+      author: 'This guy'
+    }
+
+    await api
+      .post('/api/blogs',)
+      .send(newBlog)
+      .expect(400)
+  })
 })
 
 afterAll(async () => {
