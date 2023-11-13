@@ -121,6 +121,20 @@ describe('POST', () => {
   })
 })
 
+describe('DELETE', () => {
+  test('a blog by id', async () => {
+    const firstBlogsResponse = await api.get('/api/blogs')
+    const idToDelete = firstBlogsResponse.body[0].id
+
+    await api.delete(`/api/blogs/${idToDelete}`)
+      .expect(204)
+
+    const blogsAgainResponse = await api.get('/api/blogs')
+    const ids = blogsAgainResponse.body.map(blog => blog.id)
+    expect(ids).not.toContain(idToDelete)
+  })
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })
