@@ -3,29 +3,16 @@ const supertest = require('supertest')
 const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
+const { initialBlogs, blogsInDb } = require('./test_helper')
 
-const initialBlogs = [
-  {
-    title: 'Own blog',
-    author: 'Themselves',
-    url: 'http://hs.fi',
-    likes: 0,
-  },
-  {
-    title: 'Other blog',
-    author: 'Someone',
-    url: 'localhost:3001',
-    likes: 1,
-  },
-]
 
 beforeEach(async () => {
   await Blog.deleteMany({})
-  let blogObject = new Blog(initialBlogs[0])
-  await blogObject.save()
-  blogObject = new Blog(initialBlogs[1])
-  await blogObject.save()
+  const blogObjects = initialBlogs.map(blog => new Blog(blog))
+  const promiseArray = blogObjects.map(blogObject => blogObject.save())
+  await Promise.all(promiseArray)
 })
+
 describe('initial checks', () => {
   test('blogs are returned as JSON', async () => {
     await api
@@ -70,9 +57,9 @@ describe('POST', () => {
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
-    const response = await api.get('/api/blogs')
+    const blogs = await blogsInDb()
 
-    const titles = response.body.map(b => b.title)
+    const titles = blogs.map(b => b.title)
     expect(titles).toContain('This blog')
   })
 
@@ -89,9 +76,9 @@ describe('POST', () => {
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
-    const response = await api.get('/api/blogs')
+    const blogs = await blogsInDb()
 
-    const newBlogFromDB = response.body.find(b => b.title === 'This blog')
+    const newBlogFromDB = blogs.find(b => b.title === 'This blog')
 
     expect(newBlogFromDB.likes).toBe(0)
   })
@@ -123,29 +110,29 @@ describe('POST', () => {
 
 describe('DELETE', () => {
   test('a blog by id', async () => {
-    const firstBlogsResponse = await api.get('/api/blogs')
-    const idToDelete = firstBlogsResponse.body[0].id
+    const firstBlogs = await blogsInDb()
+    const idToDelete = firstBlogs[0].id
 
     await api.delete(`/api/blogs/${idToDelete}`)
       .expect(204)
 
-    const blogsAgainResponse = await api.get('/api/blogs')
-    const ids = blogsAgainResponse.body.map(blog => blog.id)
+    const blogsAgain = await blogsInDb()
+    const ids = blogsAgain.map(blog => blog.id)
     expect(ids).not.toContain(idToDelete)
   })
 })
 
 describe('PATCH', () => {
   test('change likes of a certain blog from get result to get result +1', async () => {
-    const firstBlogsResponse = await api.get('/api/blogs')
-    const blogToChange = firstBlogsResponse.body[0]
+    const firstBlogs = await blogsInDb()
+    const blogToChange = firstBlogs[0]
 
     await api.patch(`/api/blogs/${blogToChange.id}`)
       .send({ likes: blogToChange.likes +1 })
       .expect(200)
 
-    const blogsAgainResponse = await api.get('/api/blogs')
-    const changedBlog = blogsAgainResponse.body.find(blog => blog.id === blogToChange.id)
+    const blogsAgain = await blogsInDb()
+    const changedBlog = blogsAgain.find(blog => blog.id === blogToChange.id)
     expect(changedBlog.likes).toBe(blogToChange.likes +1)
   })
 })
