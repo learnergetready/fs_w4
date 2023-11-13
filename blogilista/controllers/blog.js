@@ -1,30 +1,22 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 
-blogsRouter.get('/', (request, response) => {
-  Blog
-    .find({})
-    .then(blogs => {
-      response.json(blogs)
-    })
+blogsRouter.get('/', async (request, response) => {
+  const blogs = await Blog.find({})
+  response.json(blogs)
 })
 
-blogsRouter.get('/:id', (request, response) => {
-  Blog
-    .find({ _id:request.params.id })
-    .then(blog => {
-      response.json(blog)
-    })
+blogsRouter.get('/:id', async (request, response) => {
+  const blog = await Blog.find({ _id:request.params.id })
+  response.json(blog)
 })
 
-blogsRouter.delete('/:id', (request, response) => {
-  console.log(request.params.id)
-  Blog
-    .deleteOne({ _id:request.params.id })
-    .then(() => response.status(204).end())
+blogsRouter.delete('/:id', async (request, response) => {
+  await Blog.deleteOne({ _id:request.params.id })
+  response.status(204).end()
 })
 
-blogsRouter.post('/', (request, response) => {
+blogsRouter.post('/', async (request, response) => {
   const body = request.body
 
   if(!body.title || !body.url) {
@@ -38,11 +30,8 @@ blogsRouter.post('/', (request, response) => {
     likes: body.likes || 0
   })
 
-  blog
-    .save()
-    .then(result => {
-      response.status(201).json(result)
-    })
+  const result = await blog.save()
+  response.status(201).json(result)
 })
 
 module.exports = blogsRouter
