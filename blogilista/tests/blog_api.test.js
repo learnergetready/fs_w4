@@ -135,6 +135,21 @@ describe('DELETE', () => {
   })
 })
 
+describe('PATCH', () => {
+  test('change likes of a certain blog from get result to get result +1', async () => {
+    const firstBlogsResponse = await api.get('/api/blogs')
+    const blogToChange = firstBlogsResponse.body[0]
+
+    await api.patch(`/api/blogs/${blogToChange.id}`)
+      .send({ likes: blogToChange.likes +1 })
+      .expect(200)
+
+    const blogsAgainResponse = await api.get('/api/blogs')
+    const changedBlog = blogsAgainResponse.body.find(blog => blog.id === blogToChange.id)
+    expect(changedBlog.likes).toBe(blogToChange.likes +1)
+  })
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })

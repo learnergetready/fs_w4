@@ -34,4 +34,9 @@ blogsRouter.post('/', async (request, response) => {
   response.status(201).json(result)
 })
 
+blogsRouter.patch('/:id', async (request, response) => {
+  const blogNow = await Blog.findByIdAndUpdate(request.params.id, request.body)
+  response.json(blogNow)
+})
+
 module.exports = blogsRouter
