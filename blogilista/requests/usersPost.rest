@@ -2,7 +2,7 @@ POST HTTP://LOCALHOST:3001/api/users
 Content-Type: application/json
 
 {
-  "username": "sherpa",
-  "name": "sherpa user",
-  "password": "password"
+  "username": "mac younger",
+  "name": "mac user",
+  "password": ""
 }
