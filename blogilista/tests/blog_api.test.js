@@ -3,8 +3,7 @@ const supertest = require('supertest')
 const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
-const { initialBlogs, blogsInDb } = require('./test_helper')
-
+const { initialBlogs, blogsInDb, getTokenObject } = require('./test_helper')
 
 beforeEach(async () => {
   await Blog.deleteMany({})
@@ -45,15 +44,19 @@ describe('initial checks', () => {
 })
 describe('POST', () => {
   test('a blog can be added', async () => {
+
     const newBlog =
     { title: 'This blog',
       author: 'This guy',
       url: 'http://localhost:3001/thisURL',
       likes: 6 }
 
+    const tokenObject = await getTokenObject(api)
+
     await api
-      .post('/api/blogs',)
+      .post('/api/blogs')
       .send(newBlog)
+      .set('Authorization', `Bearer ${tokenObject.token}`)
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
@@ -64,6 +67,9 @@ describe('POST', () => {
   })
 
   test('if likes not defined, likes = 0', async() => {
+
+    const tokenObject = await getTokenObject(api)
+
     const newBlog =
     { title: 'This blog',
       author: 'This guy',
@@ -73,6 +79,7 @@ describe('POST', () => {
     await api
       .post('/api/blogs',)
       .send(newBlog)
+      .set('Authorization', `Bearer ${tokenObject.token}`)
       .expect(201)
       .expect('Content-Type', /application\/json/)
 

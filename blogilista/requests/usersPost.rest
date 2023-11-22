@@ -2,7 +2,7 @@ POST HTTP://LOCALHOST:3001/api/users
 Content-Type: application/json
 
 {
-  "username": "mac younger",
+  "username": "mac",
   "name": "mac user",
-  "password": ""
+  "password": "mic"
 }

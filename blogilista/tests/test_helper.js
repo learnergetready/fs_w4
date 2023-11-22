@@ -16,6 +16,12 @@ const initialBlogs = [
   },
 ]
 
+const initialUser = {
+  username: 'root',
+  name: 'the root user',
+  password: 'sekret'
+}
+
 const blogsInDb = async () => {
   const blogs = await Blog.find({})
   return blogs.map(b => b.toJSON())
@@ -26,8 +32,18 @@ const usersInDb = async () => {
   return users.map(u => u.toJSON())
 }
 
+const getTokenObject = async (api) => {
+  const loginResponse = await api
+    .post('/api/login')
+    .send({ username: initialUser.username, password: initialUser.password })
+
+  return loginResponse.body
+}
+
 module.exports = {
   initialBlogs,
+  initialUser,
   blogsInDb,
   usersInDb,
+  getTokenObject
 }

@@ -3,5 +3,5 @@ Content-Type: application/json
 
 {
     "username": "mac",
-    "password": ""
+    "password": "mic"
 }

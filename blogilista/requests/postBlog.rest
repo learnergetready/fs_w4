@@ -1,10 +1,10 @@
 POST HTTP://LOCALHOST:3001/api/blogs
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNoZXJwYSIsImlkIjoiNjU1MjI3YWMwNmI1NjhkNzExNjE0MDQxIiwiaWF0IjoxNzAwNTg5MDc4fQ.wG5T99-8AkBW5SZdw3JrpBukXUutHYBhkHMWplwz4rw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1hYyIsImlkIjoiNjU1ZTE1Y2VlYTUzNjc3OTYzNTk5ZjQ2IiwiaWF0IjoxNzAwNjY0NzkzLCJleHAiOjE3MDA2NjgzOTN9.LnhvitpJQF1Xl6JZKCQSzx551nUhvjHEP5cEwjuoxr8
 
 {
-  "title": "Ninth blog",
-  "author": "Someone who is a sicko",
+  "title": "Tenth blog",
+  "author": "Someone who is a well",
   "url": "localhost:3001",
-  "likes": "15"
+  "likes": "1"
 }
