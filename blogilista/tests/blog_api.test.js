@@ -3,9 +3,10 @@ const supertest = require('supertest')
 const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
-const { initialBlogs, blogsInDb, getTokenObject } = require('./test_helper')
+const { blogsInDb, getTokenObject, getInitialBlogs } = require('./test_helper')
 
 beforeEach(async () => {
+  const initialBlogs = await getInitialBlogs()
   await Blog.deleteMany({})
   const blogObjects = initialBlogs.map(blog => new Blog(blog))
   const promiseArray = blogObjects.map(blogObject => blogObject.save())
@@ -22,6 +23,7 @@ describe('initial checks', () => {
 
   test('all blogs are returned', async () => {
     const response = await api.get('/api/blogs')
+    const initialBlogs = await getInitialBlogs()
 
     expect(response.body).toHaveLength(initialBlogs.length)
   })
@@ -96,9 +98,12 @@ describe('POST', () => {
       url: 'http://localhost:3001/thisURL'
     }
 
+    const tokenObject = await getTokenObject(api)
+
     await api
       .post('/api/blogs',)
       .send(newBlog)
+      .set('Authorization', `Bearer ${tokenObject.token}`)
       .expect(400)
   })
 
@@ -108,24 +113,61 @@ describe('POST', () => {
       author: 'This guy'
     }
 
+    const tokenObject = await getTokenObject(api)
+
     await api
       .post('/api/blogs',)
       .send(newBlog)
+      .set('Authorization', `Bearer ${tokenObject.token}`)
       .expect(400)
   })
 })
 
 describe('DELETE', () => {
-  test('a blog by id', async () => {
+  test('a blog by id, same user id than who added it', async () => {
     const firstBlogs = await blogsInDb()
     const idToDelete = firstBlogs[0].id
 
+    const tokenObject = await getTokenObject(api)
     await api.delete(`/api/blogs/${idToDelete}`)
+      .set('Authorization', `Bearer ${tokenObject.token}`)
       .expect(204)
 
     const blogsAgain = await blogsInDb()
     const ids = blogsAgain.map(blog => blog.id)
     expect(ids).not.toContain(idToDelete)
+  })
+
+  test('a blog by id, different user id than who added it', async () => {
+    const firstBlogs = await blogsInDb()
+    const idToDelete = firstBlogs[0].id
+
+    const newUser = { username: 'theSecond', name: 'the second', password: 'password' }
+
+    const tokenObject = await api
+      .post('/api/login')
+      .send({ username: newUser.username, password: newUser.password })
+
+    await api.delete(`/api/blogs/${idToDelete}`)
+      .set('Authorization', `Bearer ${tokenObject.body.token}`)
+      .expect(401)
+
+    const blogsAgain = await blogsInDb()
+    const ids = blogsAgain.map(blog => blog.id)
+    expect(ids).toContain(idToDelete)
+  })
+
+  test('a blog by id, incorrect token', async () => {
+    const firstBlogs = await blogsInDb()
+    const idToDelete = firstBlogs[0].id
+
+    await api.delete(`/api/blogs/${idToDelete}`)
+      .set('Authorization', 'Bearer DSIFJSVDIHSUVDSD7VYSDVDSIUVASUDYVG')
+      .expect(401)
+
+    const blogsAgain = await blogsInDb()
+    const ids = blogsAgain.map(blog => blog.id)
+    expect(ids).toContain(idToDelete)
   })
 })
 

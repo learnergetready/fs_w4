@@ -14,13 +14,24 @@ blogsRouter.get('/:id', async (request, response) => {
 })
 
 blogsRouter.delete('/:id', async (request, response) => {
+
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
+
+  if(!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' })
+  }
+  const blogToDelete = await Blog.findById({ _id: request.params.id })
+
+  if(blogToDelete.user.toString() !== decodedToken.id) {
+    return response.status(401).json({ error: 'only user, who added the blog, can remove the blog' })
+  }
+
   await Blog.deleteOne({ _id:request.params.id })
   response.status(204).end()
 })
 
 blogsRouter.post('/', async (request, response) => {
   const body = request.body
-  console.log(request)
   const decodedToken = jwt.verify(request.token, process.env.SECRET)
 
   if(!decodedToken.id) {

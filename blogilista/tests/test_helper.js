@@ -1,20 +1,29 @@
 const User = require('../models/user')
 const Blog = require('../models/blog')
 
-const initialBlogs = [
-  {
-    title: 'Own blog',
-    author: 'Themselves',
-    url: 'http://hs.fi',
-    likes: 0,
-  },
-  {
-    title: 'Other blog',
-    author: 'Someone',
-    url: 'localhost:3001',
-    likes: 1,
-  },
-]
+const getInitialBlogs = async () => {
+  const userWhoAdded = await User.findOne({})
+
+  const blogs =
+  [
+    {
+      title: 'Own blog',
+      author: 'Themselves',
+      url: 'http://hs.fi',
+      likes: 0,
+      user: userWhoAdded.id
+    },
+    {
+      title: 'Other blog',
+      author: 'Someone',
+      url: 'localhost:3001',
+      likes: 1,
+      user: userWhoAdded.id
+    },
+  ]
+
+  return blogs
+}
 
 const initialUser = {
   username: 'root',
@@ -32,16 +41,16 @@ const usersInDb = async () => {
   return users.map(u => u.toJSON())
 }
 
-const getTokenObject = async (api) => {
+const getTokenObject = async (api, user=initialUser) => {
   const loginResponse = await api
     .post('/api/login')
-    .send({ username: initialUser.username, password: initialUser.password })
+    .send({ username: user.username, password: user.password })
 
   return loginResponse.body
 }
 
 module.exports = {
-  initialBlogs,
+  getInitialBlogs,
   initialUser,
   blogsInDb,
   usersInDb,
